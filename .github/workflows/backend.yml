@@ -1,13 +1,10 @@
 name: Backend CI
 
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
     branches:
-      - dev
       - main
-#   pull_request:
-#     branches:
-#       - main
 
 jobs:
   test-backend:
@@ -19,8 +16,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
+          registry-url: "https://registry.npmjs.org"
           cache: "npm"
+          cache-dependency-path: backend/package-lock.json
 
       - name: Install Backend Dependencies
         run: |

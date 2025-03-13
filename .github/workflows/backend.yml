@@ -1,0 +1,42 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "npm"
+
+      - name: Install Backend Dependencies
+        run: |
+          cd backend
+          npm install
+
+      - name: Set up Database (PostgreSQL)
+        run: |
+          docker run --name test-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=property_app -p 5432:5432 -d postgres
+
+      - name: Run Migrations
+        run: |
+          cd backend
+          npx prisma migrate deploy
+
+      - name: Run Backend Tests
+        run: |
+          cd backend
+          npm test

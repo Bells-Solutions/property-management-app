@@ -10,10 +10,10 @@ app.use(express.json());
 
 // Protected Route Example
 app.get("/protected", checkJwt, (req, res) => {
-  res.json({
-    message: "You have access to this protected route!",
-    user: req.body,
-  });
+    res.json({
+        message: "You have access to this protected route!",
+        user: req.body,
+    });
 });
 
 app.use("api/users", userRoutes);

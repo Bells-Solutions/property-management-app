@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String  @id @default(uuid())
+  email       String  @unique
+  auth0Id     String  @unique // Auth0 user ID
+  role        UserRole @default(TENANT)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  properties  Property[]
+  leases      Lease[]
+  transactions Transaction[]
+  maintenanceRequests MaintenanceRequest[]
+}
+
+model Property {
+  id          String @id @default(uuid())
+  ownerId     String
+  address     String
+  city        String
+  state       String
+  zipCode     String
+  country     String
+  price       Float
+  status      PropertyStatus @default(AVAILABLE)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  owner       User @relation(fields: [ownerId], references: [id])
+  leases      Lease[]
+  transactions Transaction[]
+  maintenanceRequests MaintenanceRequest[]
+}
+
+model Lease {
+  id           String @id @default(uuid())
+  propertyId   String
+  tenantId     String
+  startDate    DateTime
+  endDate      DateTime
+  monthlyRent  Float
+  status       LeaseStatus @default(ACTIVE)
+  signed       Boolean @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  property     Property @relation(fields: [propertyId], references: [id])
+  tenant       User @relation(fields: [tenantId], references: [id])
+}
+
+model Transaction {
+  id          String @id @default(uuid())
+  tenantId    String
+  propertyId  String
+  amount      Float
+  status      TransactionStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+
+  // Relations
+  tenant      User @relation(fields: [tenantId], references: [id])
+  property    Property @relation(fields: [propertyId], references: [id])
+}
+
+model MaintenanceRequest {
+  id          String @id @default(uuid())
+  propertyId  String
+  tenantId    String
+  description String
+  status      MaintenanceStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  property    Property @relation(fields: [propertyId], references: [id])
+  tenant      User @relation(fields: [tenantId], references: [id])
+}
+
+enum UserRole {
+  LANDLORD
+  TENANT
+  PROPERTY_MANAGER
+  ADMIN
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  RENTED
+  UNDER_MAINTENANCE
+}
+
+enum LeaseStatus {
+  ACTIVE
+  EXPIRED
+  TERMINATED
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum MaintenanceStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+}

@@ -142,8 +142,8 @@ async function main() {
 }
 
 main()
-  .catch((e: Error) => {
-    console.error(e.message);
+  .catch((e) => {
+    console.error(e);
   })
   .finally(async () => {
     await prisma.$disconnect();

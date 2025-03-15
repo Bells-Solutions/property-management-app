@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import checkJwt from "../middlewares/auth.middleware";
 import { getUserProfile } from "../controllers/user.controller";
 

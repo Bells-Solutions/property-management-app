@@ -1,7 +1,6 @@
 import { expressjwt } from "express-jwt";
 import jwksRsa from "jwks-rsa";
 import dotenv from "dotenv";
-import { Request, Response, NextFunction } from "express";
 
 dotenv.config();
 

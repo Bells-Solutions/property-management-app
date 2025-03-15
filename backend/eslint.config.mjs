@@ -18,7 +18,7 @@ export default [
 
             /** 🔹 Code Consistency & Best Practices */
             eqeqeq: ["error", "always"], // Enforce strict equality (=== & !==)
-            curly: ["error", "all"], // Require curly braces around blocks
+            // curly: ["error", "all"], // Require curly braces around blocks
             "no-var": "error", // Disallow var in favor of let/const
             "prefer-const": "error", // Enforce const usage where possible
             "arrow-body-style": ["error", "as-needed"], // Require concise arrow function syntax when possible

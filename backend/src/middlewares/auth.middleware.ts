@@ -16,16 +16,4 @@ const checkJwt = expressjwt({
   algorithms: ["RS256"],
 });
 
-const checkRole = (roles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    if (
-      !req.auth ||
-      !roles.includes((req.auth as any)["https://your-api/roles"])
-    ) {
-      return res.status(403).json({ message: "Access denied" });
-    }
-    next();
-  };
-};
-
 export default checkJwt;
